@@ -87,6 +87,8 @@ void Read_IMU()
             float t3 = +2.0 * (dqw * dqz + dqx * dqy);
             float t4 = +1.0 - 2.0 * (ysqr + dqz * dqz);
             yaw = atan2(t3, t4);
+            float imuSumHeading = yaw * -RAD_TO_DEG;   // added: the heading unrounded, for the IMU summary
+            if (imuSumHeading < 0) imuSumHeading += 360;
 
             // Convert yaw to degrees x10
             yaw = (int16_t)((yaw * -RAD_TO_DEG_X_10));
@@ -113,6 +115,7 @@ void Read_IMU()
                 pitch = asin(t2) * RAD_TO_DEG_X_10;
                 roll = atan2(t0, t1) * RAD_TO_DEG_X_10;
             }
+            imuSummary.add(imuSumHeading, roll * 0.1f, 2);   // added
         }
       }     
     }

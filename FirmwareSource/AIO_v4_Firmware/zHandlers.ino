@@ -181,6 +181,8 @@ void readBNO()
         float t3 = +2.0 * (dqw * dqz + dqx * dqy);
         float t4 = +1.0 - 2.0 * (ysqr + dqz * dqz);
         yaw = atan2(t3, t4);
+        float imuSumHeading = yaw * -RAD_TO_DEG;   // added: the heading unrounded, for the IMU summary
+        if (imuSumHeading < 0) imuSumHeading += 360;
 
         // Convert yaw to degrees x10
         yaw = (int16_t)((yaw * -RAD_TO_DEG_X_10));
@@ -209,6 +211,7 @@ void readBNO()
         itoa(yaw, imuHeading, 10);
         itoa(pitch, imuPitch, 10);
         itoa(roll, imuRoll, 10);
+        imuSummary.add(imuSumHeading, roll * 0.1f, 2);   // added
         itoa(0, imuYawRate, 10);
     }
 }
@@ -280,6 +283,9 @@ void BuildNmea(void)
     SerialAOG.write(nmea);  //Always send USB GPS data
 
 
+    // added: the IMU summary goes first, so AgOpenGPS has it when the fix comes
+    if (useDual) imuSummary.clear();
+    else imuSummary.send(gnssBridgeSend);
     int len = strlen(nmea);
     Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
     Eth_udpPAOGI.write(nmea, len);

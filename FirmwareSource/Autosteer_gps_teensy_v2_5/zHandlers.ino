@@ -136,6 +136,8 @@ void readBNO()
             float t3 = +2.0 * (dqw * dqz + dqx * dqy);
             float t4 = +1.0 - 2.0 * (ysqr + dqz * dqz);
             yaw = atan2(t3, t4);
+            float imuSumHeading = yaw * -RAD_TO_DEG;   // added: the heading unrounded, for the IMU summary
+            if (imuSumHeading < 0) imuSumHeading += 360;
 
             // Convert yaw to degrees x10
             correctionHeading = -yaw;
@@ -168,6 +170,7 @@ void readBNO()
             {
               roll *= -1;
             }
+            imuSummary.add(imuSumHeading, roll * 0.1f, 2);   // added
         }
 }
 
@@ -349,6 +352,9 @@ void BuildNmea(void)
 
     if (Ethernet_running)   //If ethernet running send the GPS there
     {
+        // added: the IMU summary goes first, so AgOpenGPS has it when the fix comes
+        if (useDual) imuSummary.clear();
+        else imuSummary.send(gnssBridgeSend);
         int len = strlen(nmea);
         Eth_udpPAOGI.beginPacket(Eth_ipDestination, portDestination);
         Eth_udpPAOGI.write(nmea, len);

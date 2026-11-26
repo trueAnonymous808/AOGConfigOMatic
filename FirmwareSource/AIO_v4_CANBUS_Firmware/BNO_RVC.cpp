@@ -50,9 +50,9 @@ bool BNO_rvc::read(BNO_rvcData* bnoData) {
     int16_t temp;
     temp = buffer[1] + (buffer[2] << 8);
 
+    bnoData->yawX100 = temp;   // the raw yaw, every reading (the IMU summary uses it)
     if (angCounter < 20)
     {
-        bnoData->yawX100 = temp; //For angular velocity calc
         bnoData->angVel += (temp - prevYAw);
         angCounter++;
         prevYAw = temp;

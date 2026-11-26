@@ -45,6 +45,7 @@ foreach ($f in $firmwares) {
     # the shared parts, the same in every sketch
     Copy-Item (Join-Path $here 'common\AogGnssBridge.h') $sketchDir -Force
     Copy-Item (Join-Path $here 'common\AogNetUpdate.h') $sketchDir -Force
+    Copy-Item (Join-Path $here 'common\AogImuSummary.h') $sketchDir -Force
 
     $dir = Join-Path $build $f.Sketch
     try {
@@ -53,7 +54,7 @@ foreach ($f in $firmwares) {
     }
     finally {
         # the copies go again: the shared parts live only in common/
-        if (-not $f.From) { Remove-Item (Join-Path $sketchDir 'AogGnssBridge.h'), (Join-Path $sketchDir 'AogNetUpdate.h') -ErrorAction SilentlyContinue }
+        if (-not $f.From) { Remove-Item (Join-Path $sketchDir 'AogGnssBridge.h'), (Join-Path $sketchDir 'AogNetUpdate.h'), (Join-Path $sketchDir 'AogImuSummary.h') -ErrorAction SilentlyContinue }
     }
     if (-not $built) { throw "$($f.Sketch) did not build" }
     $target = Join-Path $out ($f.Out + '.hex')

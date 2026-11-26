@@ -21,6 +21,15 @@ void gnssBridgeSend(const uint8_t* data, size_t len)
     Udp.endPacket();
 }
 
+// IMU summary (added): every serial BNO085 reading (100 Hz) into the summary sent with the next fix
+void imuSummaryRvc()
+{
+    float h = bnoData.yawX100 * 0.01f;   // the raw yaw, 0.01 degree steps
+    if (h < 0) h += 360;
+    float r = (steerConfig.IsUseY_Axis ? bnoData.rollX10 : bnoData.pitchX10) * 0.1f;   // the roll as the PANDA has it
+    imuSummary.add(h, r, 1);
+}
+
 void gnssBridgeText1(char c)
 {
     parser << c;

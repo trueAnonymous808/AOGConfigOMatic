@@ -307,6 +307,9 @@ void BuildNmea(void)
 
 
     //off to AOG
+    // added: the IMU summary goes first, so AgOpenGPS has it when the fix comes
+    if (useDual) imuSummary.clear();
+    else imuSummary.send(gnssBridgeSend);
     int len = strlen(nmea);
     Udp.beginPacket(ipDestination, 9999);
     Udp.write(nmea, len);

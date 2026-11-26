@@ -27,6 +27,8 @@
 
 #include "AogGnssBridge.h"   // added: raw GNSS to AgIO, receiver commands both ways, UM982 HPR
 #include "AogNetUpdate.h"    // added: firmware update over Ethernet
+#include "AogImuSummary.h"   // added: what the IMU did between two fixes, to AgOpenGPS (PGN 0xB2)
+AogImuSummary imuSummary;
 
 /************************* User Settings *************************/
 // Serial Ports

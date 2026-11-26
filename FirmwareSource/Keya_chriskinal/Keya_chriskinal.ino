@@ -6,6 +6,8 @@
 #include "zNMEAParser.h"
 #include "AogGnssBridge.h"   // added: raw GNSS to AgIO, receiver commands both ways
 #include "AogNetUpdate.h"    // added: firmware update over Ethernet
+#include "AogImuSummary.h"   // added: what the IMU did between two fixes, to AgOpenGPS (PGN 0xB2)
+AogImuSummary imuSummary;
 #define FIRMWARE_NAME "Keya (OTA & RawGNSS)"
 #include <Wire.h>
 #include "BNO08x_AOG.h"
