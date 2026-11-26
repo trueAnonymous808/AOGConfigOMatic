@@ -59,10 +59,12 @@ public:
         prevHeading = headingDeg;
         prevRoll = rollDeg;
 
+        // (255 readings at most: no fix for 2.5 s - the average stays that of the ones counted)
+        if (count == 255) return;
         rollSum += rollDeg;
         if (count == 0 || rollDeg < rollMin) rollMin = rollDeg;
         if (count == 0 || rollDeg > rollMax) rollMax = rollDeg;
-        if (count < 255) count++;
+        count++;
     }
 
     // with every fix, before the PANDA: what came since the last one, then it starts again
