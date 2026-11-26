@@ -1,0 +1,6 @@
+# copied into every sketch by build.ps1 from common/ before it builds: kept only in common/
+*/AogGnssBridge.h
+*/AogNetUpdate.h
+!common/AogGnssBridge.h
+!common/AogNetUpdate.h
+.DS_Store

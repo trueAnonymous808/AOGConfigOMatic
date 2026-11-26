@@ -3,6 +3,17 @@ A helper to easily flash the Teensy and F9P for agOpenGPS
 
 [![Build and release](https://github.com/lansalot/AOGConfigOMatic/actions/workflows/main.yml/badge.svg)](https://github.com/lansalot/AOGConfigOMatic/actions/workflows/main.yml)
 
+> **This is the AgOpenGPS fork of AOGConfigOMatic.** Besides the original firmwares it holds modified ones in
+> [`Firmwares/AgOpenGPS-OTA-RawGNSS`](Firmwares/AgOpenGPS-OTA-RawGNSS): AgOpenGPS Teensy firmwares (AIO v4, AIO v2.5, CANBUS
+> All-In-One and CommonRail, Keya), each working with any receiver (F9P or UM982, single or dual antenna, found as
+> it runs), with additions for AgIO - raw receiver measurements for TDCP in
+> AgOpenGPS, receiver (UM982, u-blox F9P) configuration over Ethernet, the UM982 dual antenna heading, and firmware
+> update over Ethernet from AgIO (after the first time over USB). Otherwise they work as the originals. Their source
+> and build script (GPL-3.0) are in [`FirmwareSource`](FirmwareSource). In this program they have a tab of their
+> own, **OTA & RawGNSS** (the Teensy tab keeps the original ones). AgIO's module configurator downloads them
+> from here; all the other firmwares it takes from the original repository,
+> [lansalot/AOGConfigOMatic](https://github.com/lansalot/AOGConfigOMatic).
+
 First of all - full credit to https://github.com/luni64/TeensySharp for this excellent library that makes flashing the Teensy super-simple! And to Jaap van den Handel for his excellent F9P configuration code !
 
 Go to the [Releases](https://github.com/lansalot/AOGConfigOMatic/releases) page and download the latest! Unzip it and run the main program.

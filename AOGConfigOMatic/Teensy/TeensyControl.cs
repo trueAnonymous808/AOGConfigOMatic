@@ -16,6 +16,15 @@ namespace AOGConfigOMatic.Teensy
         private readonly TeensyWatcher watcher;
         private string chosenFirmware = "";
 
+        /// <summary>The folder under Firmwares this tab lists ("" = all of them).</summary>
+        public string FirmwareFolder { get; set; } = "";
+
+        /// <summary>A folder under Firmwares this tab leaves out ("" = none), e.g. the one another tab shows.</summary>
+        public string ExcludeFolder { get; set; } = "";
+
+        /// <summary>Lines shown in the message box when the tab opens, to tell what its firmwares are.</summary>
+        public string InfoText { get; set; } = "";
+
         public TeensyControl()
         {
             InitializeComponent();
@@ -26,7 +35,6 @@ namespace AOGConfigOMatic.Teensy
                 lbTeensies.Items.Add(teensy);
             }
             if (lbTeensies.Items.Count > 0) lbTeensies.SelectedIndex = 0;
-            UpdateFirmwareBox();
         }
 
         private void LogMessage(string Text)
@@ -41,8 +49,8 @@ namespace AOGConfigOMatic.Teensy
             tvFirmware.Nodes.Clear();
             teensyFirmwareItems.Clear();
 
-            // Scan for hex files in Firmwares folder (packaged with application)
-            string firmwaresPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares");
+            // Scan for hex files in Firmwares folder (packaged with application), or the part of it this tab shows
+            string firmwaresPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares", FirmwareFolder ?? "");
             if (Directory.Exists(firmwaresPath))
             {
                 // Scan subdirectories and build tree structure
@@ -66,6 +74,12 @@ namespace AOGConfigOMatic.Teensy
                 foreach (var subDir in subDirs)
                 {
                     string folderName = Path.GetFileName(subDir);
+                    // the folder another tab shows is left out here
+                    if (!string.IsNullOrEmpty(ExcludeFolder) &&
+                        string.Equals(Path.GetFullPath(subDir).TrimEnd('\\'),
+                            Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares", ExcludeFolder)).TrimEnd('\\'),
+                            StringComparison.OrdinalIgnoreCase))
+                        continue;
                     TreeNode folderNode = new TreeNode(folderName);
                     folderNode.Tag = null; // Folder node, not a firmware file
                     
@@ -139,6 +153,10 @@ namespace AOGConfigOMatic.Teensy
         private void TeensyControl_Load(object sender, EventArgs e)
         {
             btnProgram.Enabled = false;
+            if (!string.IsNullOrEmpty(InfoText))
+                foreach (string line in InfoText.Split('\n'))
+                    LogMessage(line.TrimEnd('\r'));
+            UpdateFirmwareBox();
         }
 
 

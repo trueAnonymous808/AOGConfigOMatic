@@ -43,6 +43,8 @@ namespace AOGConfigOMatic
             this.uBloxControl = new AOGConfigOMatic.UBlox.UBloxControl();
             this.tabTeensy = new System.Windows.Forms.TabPage();
             this.teensyControl = new AOGConfigOMatic.Teensy.TeensyControl();
+            this.tabAogFirmware = new System.Windows.Forms.TabPage();
+            this.aogFirmwareControl = new AOGConfigOMatic.Teensy.TeensyControl();
             this.tabUM982 = new System.Windows.Forms.TabPage();
             this.um982Control = new AOGConfigOMatic.UM982.UM982Control();
             this.tabAgOpenGPS = new System.Windows.Forms.TabPage();
@@ -51,6 +53,7 @@ namespace AOGConfigOMatic
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.tabTeensy.SuspendLayout();
+            this.tabAogFirmware.SuspendLayout();
             this.tabUM982.SuspendLayout();
             this.tabAgOpenGPS.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +63,7 @@ namespace AOGConfigOMatic
             this.tbPages.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tbPages.Controls.Add(this.tabGPS);
             this.tbPages.Controls.Add(this.tabTeensy);
+            this.tbPages.Controls.Add(this.tabAogFirmware);
             this.tbPages.Controls.Add(this.tabUM982);
             this.tbPages.Controls.Add(this.tabAgOpenGPS);
             this.tbPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -108,6 +112,35 @@ namespace AOGConfigOMatic
             this.teensyControl.Name = "teensyControl";
             this.teensyControl.Size = new System.Drawing.Size(720, 539);
             this.teensyControl.TabIndex = 14;
+            this.teensyControl.ExcludeFolder = "AgOpenGPS-OTA-RawGNSS";
+            //
+            // tabAogFirmware - the AgOpenGPS firmwares modified for AgIO (OTA update, raw GNSS for TDCP)
+            //
+            this.tabAogFirmware.Controls.Add(this.aogFirmwareControl);
+            this.tabAogFirmware.Location = new System.Drawing.Point(4, 41);
+            this.tabAogFirmware.Name = "tabAogFirmware";
+            this.tabAogFirmware.Padding = new System.Windows.Forms.Padding(3);
+            this.tabAogFirmware.Size = new System.Drawing.Size(720, 539);
+            this.tabAogFirmware.TabIndex = 4;
+            this.tabAogFirmware.Text = "OTA & RawGNSS";
+            this.tabAogFirmware.UseVisualStyleBackColor = true;
+            //
+            // aogFirmwareControl
+            //
+            this.aogFirmwareControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.aogFirmwareControl.Location = new System.Drawing.Point(0, 0);
+            this.aogFirmwareControl.Margin = new System.Windows.Forms.Padding(7);
+            this.aogFirmwareControl.Name = "aogFirmwareControl";
+            this.aogFirmwareControl.Size = new System.Drawing.Size(720, 539);
+            this.aogFirmwareControl.TabIndex = 14;
+            this.aogFirmwareControl.FirmwareFolder = "AgOpenGPS-OTA-RawGNSS";
+            this.aogFirmwareControl.InfoText =
+                "AgOpenGPS firmwares modified for AgIO (source: FirmwareSource in this repository, GPL-3.0):\n" +
+                "  - firmware update over Ethernet from AgIO (OTA) - only this first time over USB\n" +
+                "  - raw GNSS measurements to AgIO for TDCP in AgOpenGPS\n" +
+                "  - receiver (UM982 / F9P) settings over Ethernet from AgIO's module configurator\n" +
+                "  - any receiver: F9P or UM982, single or dual antenna, found as it runs\n" +
+                "Otherwise they work as the originals. Not tried on a tractor yet.";
             // 
             // tabUM982
             // 
@@ -177,6 +210,7 @@ namespace AOGConfigOMatic
             this.tbPages.ResumeLayout(false);
             this.tabGPS.ResumeLayout(false);
             this.tabTeensy.ResumeLayout(false);
+            this.tabAogFirmware.ResumeLayout(false);
             this.tabUM982.ResumeLayout(false);
             this.tabAgOpenGPS.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -191,6 +225,8 @@ namespace AOGConfigOMatic
         private TabPage tabUM982;
         private TabPage tabAgOpenGPS;
         private Teensy.TeensyControl teensyControl;
+        private TabPage tabAogFirmware;
+        private Teensy.TeensyControl aogFirmwareControl;
         private UM982.UM982Control um982Control;
         private UBlox.UBloxControl uBloxControl;
         private AgOpenGPS.AgOpenGpsControl agOpenGpsControl;
