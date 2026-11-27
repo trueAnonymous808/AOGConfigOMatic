@@ -442,7 +442,7 @@ boolean intendToSteer = 0;        //Do We Intend to Steer?
             delay(300);
 
             // Use GameRotationVector
-            bno08x.enableGameRotationVector(GYRO_LOOP_TIME); 
+            bno08x.enableGameRotationVector(GYRO_LOOP_TIME); bno08x.enableAccelerometer(GYRO_LOOP_TIME);   // added: for the IMU summary
   
             useBNO08x = true;
           }

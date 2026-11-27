@@ -72,5 +72,10 @@ bool BNO_rvc::read(BNO_rvcData* bnoData) {
     temp = buffer[5] + (buffer[6] << 8);
     bnoData->rollX10 = (int16_t)((float)temp * DEGREE_SCALE);
 
+    // added: the acceleration the packet carries too (milli-g), for the IMU summary
+    bnoData->accX = (int16_t)(buffer[7] + (buffer[8] << 8));
+    bnoData->accY = (int16_t)(buffer[9] + (buffer[10] << 8));
+    bnoData->accZ = (int16_t)(buffer[11] + (buffer[12] << 8));
+
     return true;
 }

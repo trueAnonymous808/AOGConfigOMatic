@@ -4,7 +4,7 @@
 // at most (a pothole) - is summed up here and sent just before each PANDA in PGN 0xB2. The AgIO forwards it to
 // AgOpenGPS like any module PGN; an AgOpenGPS that does not know it ignores it, so nothing changes for it.
 //
-//   0x80 0x81 0x7F 0xB2 len(18) payload crc
+//   0x80 0x81 0x7F 0xB2 len(28) payload crc
 //   payload, little endian:
 //     int16  yaw rate, deg/s x100 (heading increasing = +), averaged over the interval
 //     int16  roll average, deg x100        int16 roll min, deg x100      int16 roll max, deg x100
@@ -13,6 +13,10 @@
 //     int16  heading of the last sample, deg x10
 //     uint16 interval covered, ms
 //     uint8  samples                       uint8 IMU: 1 BNO085 serial (RVC), 2 BNO085 I2C
+//     uint32 the module's time since it was switched on, ms (AgOpenGPS tells by it whether the IMU went on
+//            counting the turns while the tablet was off: then the heading at the start is known anywhere)
+//     int16  x3 acceleration along the IMU's x, y, z, m/s2 x100, averaged (gravity in it; 32767: none) -
+//            the jolt at the first move tells forwards from backwards
 //   crc: the low byte of the sum of the bytes from the third on (as every AgOpenGPS PGN)
 
 #pragma once
@@ -22,6 +26,19 @@ class AogImuSummary
 {
 public:
     // one IMU reading: heading and roll in degrees (the roll as it goes in the PANDA: the axis chosen already)
+    void add(float headingDeg, float rollDeg, uint8_t imuType, float ax, float ay, float az)
+    {
+        // the acceleration (m/s2, gravity in it), averaged like the roll
+        if (accCount < 255)
+        {
+            accSum[0] += ax;
+            accSum[1] += ay;
+            accSum[2] += az;
+            accCount++;
+        }
+        add(headingDeg, rollDeg, imuType);
+    }
+
     void add(float headingDeg, float rollDeg, uint8_t imuType)
     {
         uint32_t now = micros();
@@ -72,12 +89,12 @@ public:
     void send(SendFn sendFn)
     {
         if (count == 0) return;   // no IMU (or a dual antenna in its place): nothing
-        uint8_t p[24];
+        uint8_t p[34];
         p[0] = 0x80;
         p[1] = 0x81;
         p[2] = 0x7F;
         p[3] = 0xB2;
-        p[4] = 18;
+        p[4] = 28;
         int i = 5;
         put16(p, i, spanS > 0.005f ? turned / spanS * 100 : 0);
         put16(p, i, rollSum / count * 100);
@@ -92,6 +109,9 @@ public:
         p[i++] = (uint8_t)(span >> 8);
         p[i++] = count;
         p[i++] = type;
+        uint32_t up = millis();
+        for (int k = 0; k < 4; k++) p[i++] = (uint8_t)(up >> (8 * k));
+        for (int k = 0; k < 3; k++) put16(p, i, accCount > 0 ? accSum[k] / accCount * 100 : 32767);
         uint8_t crc = 0;
         for (int j = 2; j < i; j++) crc += p[j];
         p[i++] = crc;
@@ -107,6 +127,8 @@ public:
         turned = 0;
         spanS = 0;
         rollRatePeak = 0;
+        accSum[0] = accSum[1] = accSum[2] = 0;
+        accCount = 0;
     }
 
 private:
@@ -114,7 +136,8 @@ private:
     uint32_t prevUs = 0, refUs = 0;
     float prevHeading = 0, prevRoll = 0, refRoll = 0;
     float turned = 0, spanS = 0, rollSum = 0, rollMin = 0, rollMax = 0, rollRatePeak = 0;
-    uint8_t count = 0, type = 0;
+    uint8_t count = 0, type = 0, accCount = 0;
+    float accSum[3] = { 0, 0, 0 };
 
     static void put16(uint8_t* p, int& i, float v)
     {

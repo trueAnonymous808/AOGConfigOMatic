@@ -147,7 +147,7 @@ void HPR_Handler()
 
 void readBNO()
 {
-  if (bno08x.dataAvailable() == true)
+  if (imuSummaryI2cAvailable())   // (added: two reports now)
   {
     float dqx, dqy, dqz, dqw, dacr;
     uint8_t dac;
@@ -200,7 +200,7 @@ void readBNO()
     {
       roll *= -1;
     }
-    imuSummary.add(imuSumHeading, roll * 0.1f, 2);   // added
+    imuSummary.add(imuSumHeading, roll * 0.1f, 2, bno08x.getAccelX(), bno08x.getAccelY(), bno08x.getAccelZ());   // added
   }
 }
 

@@ -162,7 +162,7 @@ void imuHandler()
 
 void readBNO()
 {
-    if (bno08x.dataAvailable() == true)
+    if (imuSummaryI2cAvailable())   // (added: two reports now)
     {
         float dqx, dqy, dqz, dqw, dacr;
         uint8_t dac;
@@ -211,7 +211,7 @@ void readBNO()
         itoa(yaw, imuHeading, 10);
         itoa(pitch, imuPitch, 10);
         itoa(roll, imuRoll, 10);
-        imuSummary.add(imuSumHeading, roll * 0.1f, 2);   // added
+        imuSummary.add(imuSumHeading, roll * 0.1f, 2, bno08x.getAccelX(), bno08x.getAccelY(), bno08x.getAccelZ());   // added
         itoa(0, imuYawRate, 10);
     }
 }

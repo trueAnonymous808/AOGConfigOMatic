@@ -24,7 +24,16 @@ void imuSummaryRvc()
     float h = bnoData.yawX100 * 0.01f;   // the raw yaw, 0.01 degree steps
     if (h < 0) h += 360;
     float r = (steerConfig.IsUseY_Axis ? bnoData.rollX10 : bnoData.pitchX10) * 0.1f;   // the roll as the PANDA has it
-    imuSummary.add(h, r, 1);
+    imuSummary.add(h, r, 1, bnoData.accX * MILLI_G_TO_MS2, bnoData.accY * MILLI_G_TO_MS2, bnoData.accZ * MILLI_G_TO_MS2);
+}
+
+// IMU summary (added): the I2C BNO085 sends two reports now (rotation and acceleration) - a few packets read, the
+// newest of each kept
+bool imuSummaryI2cAvailable()
+{
+    bool any = false;
+    for (int k = 0; k < 3 && bno08x.dataAvailable(); k++) any = true;
+    return any;
 }
 
 void gnssBridgeText1(char c)

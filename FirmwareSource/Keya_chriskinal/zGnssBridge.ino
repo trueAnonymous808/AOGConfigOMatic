@@ -22,6 +22,15 @@ void gnssBridgeSend(const uint8_t* data, size_t len)
     Eth_udpPAOGI.endPacket();
 }
 
+// IMU summary (added): the I2C BNO085 sends two reports now (rotation and acceleration) - a few packets read, the
+// newest of each kept
+bool imuSummaryI2cAvailable()
+{
+    bool any = false;
+    for (int k = 0; k < 3 && bno08x.dataAvailable(); k++) any = true;
+    return any;
+}
+
 void gnssBridgeText1(char c)
 {
     parser << c;

@@ -320,7 +320,7 @@ void setup()
                   delay(300);
 
                   // Use gameRotationVector and set REPORT_INTERVAL
-                  bno08x.enableGameRotationVector(REPORT_INTERVAL);
+                  bno08x.enableGameRotationVector(REPORT_INTERVAL); bno08x.enableAccelerometer(REPORT_INTERVAL);   // added: for the IMU summary
                   useBNO08x = true;
               }
               else

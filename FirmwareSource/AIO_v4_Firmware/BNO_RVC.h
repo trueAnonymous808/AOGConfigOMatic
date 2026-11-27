@@ -20,6 +20,7 @@ typedef struct BNO_rvcData {
         pitchX10,     ///< Pitch in Degrees x 10
         rollX10,     ///< Roll in Degrees x 10
         yawX100,      // yaw in original x100
+        accX, accY, accZ,   // added: acceleration, milli-g (the IMU summary)
         angVel;         //running total of angular velocity
 } BNO_rvcData;
 

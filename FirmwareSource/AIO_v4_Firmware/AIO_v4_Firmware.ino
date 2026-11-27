@@ -249,7 +249,7 @@ void setup()
 
                     delay(300);
 
-                    bno08x.enableGameRotationVector(i2cBNO_REPORT_INTERVAL);
+                    bno08x.enableGameRotationVector(i2cBNO_REPORT_INTERVAL); bno08x.enableAccelerometer(i2cBNO_REPORT_INTERVAL);   // added: for the IMU summary
                     i2cBNOTimer = 0;
                     useBNO08xI2C = true;
                 }
